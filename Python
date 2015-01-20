@@ -1,0 +1,20 @@
+#!/usr/bin/env python3
+import subprocess
+import os
+
+directory = 'programming'
+m_subject = 'image'
+
+def get(command):
+    return subprocess.check_output(["/bin/bash", "-c", command]).decode("utf-8")
+
+total_size = []
+for root, dirs, files in os.walk(directory):
+    for file in files:
+        file = '"'+root+'/'+file+'"' 
+        command = 'file --mime-type '+file; mtype = get(command).strip().split(' ')[-1]
+        if m_subject in mtype:
+            size = get("du -hk "+file).split()[0]
+            total_size.append(int(size))
+            print(file.strip('"')+"\n", mtype+"\n", size+" k\n\n")
+print("-"*30+"\ntotal size: "+str(sum(total_size))+" k")
